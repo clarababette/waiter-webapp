@@ -50,27 +50,8 @@ app.use(
   }),
 );
 
-// Manager Routes
-app.get('/admin', managerRoutes.schedule);
-app.get('/admin/prev-week', managerRoutes.prevWeekNav);
-app.get('/admin/next-week', managerRoutes.nextWeekNav);
-app.get('/admin/today', managerRoutes.todayNav);
-
-// Waiter Routes
-app.get('/:waiter_id/schedule', waiterRoutes.schedule);
-app.get('/:waiter_id/add', waiterRoutes.selectShifts);
-app.post('/:waiter_id/add', waiterRoutes.saveShifts);
-app.get('/schedule/prev-week', waiterRoutes.prevWeekNav);
-app.get('/schedule/next-week', waiterRoutes.nextWeekNav);
-app.get('/today', waiterRoutes.todayNav);
-app.get('/:waiter_id', waiterRoutes.home);
-
-const PORT = process.env.PORT || 2305;
-app.listen(PORT, () => {
-  console.log(`App starting on port ${PORT}`);
-});
-
-await waiterRoutes.shiftAvailability(['2021-11-21'], 'CarAro');
+app.get('/', async (req, res) {
+  await waiterRoutes.shiftAvailability(['2021-11-21'], 'CarAro');
 await waiterRoutes.shiftAvailability(['2021-11-14'], 'CecSta');
 await waiterRoutes.shiftAvailability(['2021-10-22'], 'CleCud');
 await waiterRoutes.shiftAvailability(['2021-10-28'], 'CleCud');
@@ -163,4 +144,29 @@ await waiterRoutes.shiftAvailability(['2021-11-03'], 'EupHev');
 await waiterRoutes.shiftAvailability(['2021-11-13'], 'HalMed');
 await waiterRoutes.shiftAvailability(['2021-10-26'], 'EupHev');
 await waiterRoutes.shiftAvailability(['2021-10-20'], 'CarAro');
-await waiterRoutes.shiftAvailability(['2021-10-23'], 'IngMat');
+  await waiterRoutes.shiftAvailability(['2021-10-23'], 'IngMat');
+  
+  res.redirect('/admin');
+})
+
+// Manager Routes
+app.get('/admin', managerRoutes.schedule);
+app.get('/admin/prev-week', managerRoutes.prevWeekNav);
+app.get('/admin/next-week', managerRoutes.nextWeekNav);
+app.get('/admin/today', managerRoutes.todayNav);
+
+// Waiter Routes
+app.get('/:waiter_id/schedule', waiterRoutes.schedule);
+app.get('/:waiter_id/add', waiterRoutes.selectShifts);
+app.post('/:waiter_id/add', waiterRoutes.saveShifts);
+app.get('/schedule/prev-week', waiterRoutes.prevWeekNav);
+app.get('/schedule/next-week', waiterRoutes.nextWeekNav);
+app.get('/today', waiterRoutes.todayNav);
+app.get('/:waiter_id', waiterRoutes.home);
+
+const PORT = process.env.PORT || 2305;
+app.listen(PORT, () => {
+  console.log(`App starting on port ${PORT}`);
+});
+
+

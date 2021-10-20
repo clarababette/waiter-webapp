@@ -47,6 +47,8 @@ export default function managerRoutes(waiterService) {
       i++;
     }
 
+    console.log(thisWeek);
+
     res.render('manager', {
       day: thisWeek,
       week: `${thisWeek[0]['date']} - ${thisWeek[thisWeek.length - 1]['date']}`,

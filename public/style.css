@@ -1,0 +1,261 @@
+* {
+  font-family: 'Roboto', sans-serif;
+  color: #332A24;
+  text-align: center;
+  letter-spacing: 0.01rem;
+  font-weight: 300;
+  margin: 0;
+  text-decoration: none;
+}
+
+html {
+  background-color: white;
+}
+
+body {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0rem 1.5rem;
+  width: fit-content;
+  display: grid;
+  justify-items: center;
+  row-gap: 0.6rem;
+  margin-top: 1rem;
+  grid-template-columns: 1rem auto 1rem;
+  grid-template-rows: auto;
+  align-items: center;
+  align-content: start;
+  margin-bottom: 2rem;
+}
+
+body * {
+  grid-column: 2 / 3;
+}
+
+.last-week {
+  grid-column: 1 / 2;
+  grid-row: 5;
+}
+.next-week {
+  grid-column: 3 / 4;
+  grid-row: 5;
+}
+
+.last-week,
+.next-week {
+  color: #332A24;
+  background: none;
+  padding: 0;
+}
+
+.this-week {
+  /* grid-row: 5; */
+  font-size: 0.8rem;
+}
+
+.logo {
+ text-transform: uppercase;
+ padding: 0.75rem 1rem;
+ font-size: 0.9rem;
+ letter-spacing: 0.1rem;
+ font-weight: 300;
+ border:  double 3.5pt;
+ width: fit-content;
+}
+
+.shifts {
+  width: fit-content;
+  border: none;
+  background-color: #f2d87b;
+  padding: 0.5rem 0.9rem;
+  border-radius: 1.4rem;
+  font-size: 0.8rem;
+}
+
+.day {
+  padding-top: 0.5rem;
+  border: solid #332A24;
+  border-radius: 0.4rem;
+  font-size: 0.8rem;
+  width: 100%;
+  grid-column: 1 / 4;
+  justify-self: center;
+}
+
+.return {
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-decoration: underline;
+}
+
+.day span {
+  display: block;
+  color: #332A24;
+  padding-bottom: 0.4rem;
+  text-transform: capitalize;
+}
+
+.working {
+  background-color: #afd1a1;
+  border: transparent;
+}
+
+.standby {
+  background-color: #a5d5c9;
+  border: transparent;
+}
+
+
+h2 {
+  font-size: 1.2rem;
+}
+
+.today,
+.tomorrow {
+  /* height: 5rem; */
+  border-radius:0.5rem;
+  padding: 0.5rem 1rem 0 1rem;
+}
+
+.today h2,
+.tomorrow h2 {
+  /* color: #d6585c; */
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+.today span, .tomorrow span {
+    display: block;
+    padding: 0 0 0.5rem 0;
+}
+
+form.add-shift {
+    display: grid;
+    grid-auto-columns: auto 1fr;
+    grid-column-gap: 0.5rem;
+    grid-row-gap: 1rem;
+    align-content: center;
+    align-items: center;
+    width: -webkit-fill-available;
+    justify-self: end;
+}
+
+.add-shift label {
+    grid-column: 2 / 3;
+    padding-bottom: 0.5rem;
+}
+
+.add-shift input[type="checkbox"] {grid-column: 1 / 2;}
+
+.add-shift div {
+  grid-column: 1 / 3;
+  border: transparent solid 2pt;
+}
+
+input.save {
+    grid-column: 1 / 3;
+    width: fit-content;
+    border: none;
+    background-color: #c26568;
+    color: white;
+    padding: 0.5rem 0.9rem;
+    border-radius: 1.4rem;
+    font-size: 0.8rem;
+    justify-self: center;
+}
+.not.working {
+    background: none;
+    border: solid 2pt;
+}
+
+.admin h2 {
+    font-size: 0.9rem;
+    /* color: white; */
+    font-weight: 400;
+    letter-spacing: 0.05rem;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+}
+
+.week {
+    row-gap: 1rem;
+    display: grid;
+    border: none;
+    width: 100%;
+    justify-self: center;
+}
+
+.week .working {
+    background: none;
+    grid-column: 1 / 3;
+    grid-row: 2;
+}
+
+.week .standby {
+    background: none;
+    grid-column: 1/3;
+    grid-row: 3;
+}
+
+h3 {
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.05rem;
+    background: none;
+    width: fit-content;
+    margin: 0.5rem auto;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.2rem;
+}
+
+.working h3 {
+    background-color: #afd1a1;
+}
+
+.standby h3 {
+    background-color: #a5d5c9;
+}
+
+.admin {
+    grid-column: 1 / 4;
+    justify-self: center;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    row-gap: 0.5rem;
+}
+
+.admin input {
+    border: none;
+    background: none;
+    grid-column: 2;
+    grid-row: 1;
+}
+.admin .day div {/* display: none; */}
+
+.week .day.full {
+    border: solid #afd1a1;
+}
+
+.full-w-standby::before {content: '';position: absolute;border: dotted #a5d5c9;border-radius: inherit;top: -0.6rem;bottom: -0.6rem;left: -0.6rem;right: -0.6rem;}
+
+.week .day.full-w-standby {
+    position: relative;
+    border-color: #afd1a1;
+}
+
+.week .day {
+    border: solid #c26568;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 0.1rem;
+}
+
+.admin a.material-icons-round.last-week {
+    grid-row: 2;
+}
+
+.admin a.material-icons-round.next-week {
+    grid-row: 2;
+}

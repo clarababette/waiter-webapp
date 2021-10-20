@@ -1,0 +1,14 @@
+<div class="name">Hi {{waiter_name}}!</div>
+<a class="material-icons-round" href="/{{waiter_id}}">home</a>
+<p class="this-week">{{week}}</p>
+<form class="add-shift" action="/{{waiter_id}}/add" method="POST">
+{{#each days}}
+{{#if this}}
+<div class="day {{this}}"><span>{{@key}}</span><span>{{this}}</span></div>
+{{else}}
+<input type="checkbox" id={{@key}} name="{{@key}}" value={{@key}}>
+<label class="day" for={{@key}}>{{@key}}</label>
+{{/if}}
+{{/each}} 
+<input class="save" type="submit" value="save"/>
+</form>

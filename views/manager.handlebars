@@ -1,30 +1,48 @@
 <div class='admin'>
-  <a class='return' href="/admin/today">{{backToToday}}</a>
-<a class="material-icons-round last-week" href="/admin/prev-week">chevron_left</a>
-<p class="this-week">{{week}}</p>
-<a class="material-icons-round next-week" href="/admin/next-week">chevron_right</a>
+  <a class='return' href='/admin/today'>{{backToToday}}</a>
+  <a class='material-icons-round last-week'
+    href='/admin/prev-week'>chevron_left</a>
+  <p class='this-week'>{{week}}</p>
+  <a class='material-icons-round next-week'
+    href='/admin/next-week'>chevron_right</a>
   <div class='week'>
     {{#each day}}
-      <div class="day {{this.status}}">
-        <h2>{{this.date}}</h2>
-        {{#if this.working}}
-          <div class='working'>
-            <h3>Working</h3>
-            {{#each this.working}}
-              <span class='waiter'>{{this}}</span>
-            {{/each}}
-          </div>
-        {{/if}}
-        {{#if this.standby}}
-          <div class='standby'>
-            <h3>On standby</h3>
-            {{#each this.standby}}
-              <span class='waiter'>{{this}}</span>
-            {{/each}}
-          </div>
-        {{/if}}
-      <input type="button" class="material-icons-round" value="expand_more"/>
+    <div class='day {{this.status}}'>
+      <h2>{{this.date}}</h2>
+      <input type='button' class='material-icons-round' value='mode_edit' />
+      {{#if this.working}}
+      <div class='working'>
+        <h3>Working</h3>
+        {{#each this.working}}
+      <input type='button' class='material-icons-round' value='clear' />
+        <span class='waiter'>{{this}}</span>
+        {{/each}}
       </div>
+      {{/if}}
+      {{#if this.standby}}
+      <div class='standby'>
+        <h3>On standby</h3>
+        {{#each this.standby}}
+        <input type='button' class='material-icons-round' value='clear' />
+        <span class='waiter'>{{this}}</span>
+        {{/each}}
+      </div>
+      {{/if}}
+      {{#unless this.standby}}
+        <form class="admin-add" action="" method="POST">
+          <select name="admin-add" id="admin-add">
+            <option value="">Add waiter</option>
+            {{#each available-waiter}}
+            <option value="{{this.id}}">{{this.name}}</option>
+            {{/each}}
+          </select>
+          <input type='submit' class='material-icons-round' value='person_add' />
+        </form>
+        {{/unless}}
+        {{#if this.working}}
+      <input type='button' class='material-icons-round' value='expand_more' />
+      {{/if}}
+    </div>
     {{/each}}
   </div>
 </div>

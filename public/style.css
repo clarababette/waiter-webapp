@@ -50,7 +50,7 @@ body * {
 
 .this-week {
   /* grid-row: 5; */
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 .logo {
@@ -77,7 +77,7 @@ body * {
   border: solid #332A24;
   border-radius: 0.4rem;
   font-size: 0.8rem;
-  width: 100%;
+  width: 95%;
   grid-column: 1 / 4;
   justify-self: center;
 }
@@ -173,16 +173,16 @@ input.save {
     /* color: white; */
     font-weight: 400;
     letter-spacing: 0.05rem;
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 1;
     align-self: center;
 }
 
 .week {
-    row-gap: 1rem;
+    row-gap: 0.5rem;
     display: grid;
     border: none;
-    width: 100%;
+    width: max-content;
     justify-self: center;
 }
 
@@ -196,6 +196,7 @@ input.save {
     background: none;
     grid-column: 1/3;
     grid-row: 3;
+    height: fit-content;
 }
 
 h3 {
@@ -203,7 +204,7 @@ h3 {
     font-weight: 400;
     letter-spacing: 0.05rem;
     background: none;
-    width: fit-content;
+    width: 70%;
     margin: 0.5rem auto;
     padding: 0.2rem 0.4rem;
     border-radius: 0.2rem;
@@ -211,10 +212,16 @@ h3 {
 
 .working h3 {
     background-color: #afd1a1;
+    grid-column: span 2;
+    height: fit-content;
+    justify-self: center;
+    width: 10rem;
 }
 
 .standby h3 {
     background-color: #a5d5c9;
+    grid-column: span 2;
+    width: 10rem;
 }
 
 .admin {
@@ -229,10 +236,13 @@ h3 {
 .admin input {
     border: none;
     background: none;
-    grid-column: 2;
-    grid-row: 1;
 }
-.admin .day div {/* display: none; */}
+
+input[value="expand_more"] {
+   grid-column: span 3;
+}
+
+.admin .day div {display: none;display: grid;grid-template-columns: auto 1fr;row-gap: 0.5rem;align-items: center;align-content: start;grid-column: span 3;width: max-content;justify-self: center;}
 
 .week .day.full {
     border: solid #afd1a1;
@@ -240,16 +250,23 @@ h3 {
 
 .full-w-standby::before {content: '';position: absolute;border: dotted #a5d5c9;border-radius: inherit;top: -0.6rem;bottom: -0.6rem;left: -0.6rem;right: -0.6rem;}
 
+.admin div:first-child {
+  margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
 .week .day.full-w-standby {
     position: relative;
     border-color: #afd1a1;
+    margin: 0.6rem;
 }
 
 .week .day {
-    border: solid #c26568;
+    border: solid #d57b47;
     display: grid;
-    grid-template-columns: 1fr auto;
-    padding: 0.1rem;
+    grid-template-columns: 2rem 1fr 2rem;
+    padding: 0.5rem 0.1rem;
+    row-gap: 0.5rem;
 }
 
 .admin a.material-icons-round.last-week {
@@ -258,4 +275,143 @@ h3 {
 
 .admin a.material-icons-round.next-week {
     grid-row: 2;
+}
+
+input[value="clear"] {
+  font-size: 0.8rem;
+  color: red;
+  grid-column: 1;
+  padding-right: 0;
+}
+
+input[value="mode_edit"] {
+    font-size: 0.9rem;
+    grid-column: 3;
+}
+
+h2 {}
+
+form.admin-add {
+    display: flex;
+    justify-content: center;
+}
+
+span.waiter {
+    padding: 0;
+    text-align: left;
+}
+
+
+@media only screen and (min-width: 800px) {
+  .admin {
+   grid-template-columns: 1fr auto 1fr;
+  }
+  .week {
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 2rem;
+    row-gap: 2rem;
+    width: 90vw;
+    grid-column: span 3;
+}
+
+.week .day {
+  grid-column: span 1;
+  height: auto;
+  grid-template-columns: auto auto;
+  align-content: start;
+  width: 100%;
+}
+
+input[value="expand_more"] {
+display: none;
+}
+
+.admin .day div {
+    grid-column: span 3;
+    grid-row: 2;
+    row-gap: 0.4rem;
+    /* width: fit-content; */
+    justify-self: center;
+}
+
+.admin h2 {
+  font-size: 0.8rem;
+  margin: 0.3rem;
+  grid-column: 2;
+}
+
+.admin div:first-child {
+  grid-column: 1 / 4;
+  grid-row: 1 / 2;
+  width: 80%;
+  grid-template-columns: 1fr auto 1fr;
+}
+
+.week .day.full-w-standby {
+    position: relative;
+    border-color: #afd1a1;
+    margin: 0.6rem;
+    grid-template-columns: 0.5fr 1fr 1fr 0.5fr;
+    justify-items: center;
+    padding-bottom: 0.6rem;
+}
+
+.this-week {
+  width:max-content;
+}
+
+.last-week {
+  justify-self:end;
+}
+
+.next-week {
+  justify-self:start;
+}
+
+span.waiter {
+    padding: 0;
+    text-align: left;
+}
+
+.full-w-standby form.admin-add {
+    grid-column: span 4;
+}
+
+.full-w-standby h2 {
+    grid-column: 2 / 4;
+}
+
+.full-w-standby .working {}
+
+form.admin-add {
+    grid-column: span 3;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.admin .full-w-standby div {
+    grid-column: span 2;
+}
+
+input[value="mode_edit"] {
+    grid-column: 3;
+    font-size: 0.9rem;
+    justify-self: start;
+}
+
+.full-w-standby input[value="mode_edit"] {
+  font-size: 0.9rem;
+  grid-column: 4;
+  justify-self: start;
+}
+
+.working h3 {
+    width: 5rem;
+}
+
+.standby h3 {
+    width: 5rem;
+}
+
 }

@@ -1,7 +1,7 @@
 import moment from 'moment';
 export default function managerRoutes(waiterService) {
   function formatDate(date) {
-    return moment(date).format('dddd DD MMMM YYYY');
+    return moment(date).format('dddd DD MMMM');
   }
 
   async function getWaiters(day) {
@@ -32,26 +32,34 @@ export default function managerRoutes(waiterService) {
       backToToday = '← Return to this week';
     }
     let thisWeek = [];
-    let sunday = new Date();
-    sunday.setDate(sunday.getDate() - sunday.getDay());
-    sunday.setDate(sunday.getDate() + week * 7);
+    let navDates = '';
+    let today = new Date();
+    today.setDate(today.getDate() + week * 7);
 
-    let i = 1;
-    while (i < 8) {
-      let day = new Date(sunday.valueOf());
+    let i = 0;
+    while (i < 7) {
+      let day = new Date(today.valueOf());
       day.setDate(day.getDate() + i);
       let shift = {date: day};
       shift = await getWaiters(shift);
+      switch (i) {
+        case 1:
+          navDates = `${moment(shift.date).format('DD MMMM')} - `;
+          break;
+        case 6:
+          navDates = navDates + moment(shift.date).format('DD MMMM');
+          break;
+        default:
+          break;
+      }
       shift.date = formatDate(shift.date);
       thisWeek.push(shift);
       i++;
     }
 
-    console.log(thisWeek);
-
     res.render('manager', {
       day: thisWeek,
-      week: `${thisWeek[0]['date']} - ${thisWeek[thisWeek.length - 1]['date']}`,
+      week: navDates,
       backToToday: backToToday,
     });
   }

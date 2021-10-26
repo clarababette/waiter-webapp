@@ -63,10 +63,13 @@ export default function waiterService(pool) {
       'SELECT employee_id FROM shifts WHERE shift_date = $1 AND status= $2 LIMIT 1',
       [date, 'standby'],
     );
-    return await pool.query(
-      'UPDATE shifts SET status = $1 WHERE shift_date = $2 AND employee_id = $3',
-      ['working', date, firstStandby.rows[0].employee_id ?? undefined],
-    );
+
+    if (firstStandby.rows[0].employee_id) {
+      await pool.query(
+        'UPDATE shifts SET status = $1 WHERE shift_date = $2 AND employee_id = $3',
+        ['working', date, firstStandby.rows[0].employee_id],
+      );
+    }
   }
 
   async function getAllWaiters() {

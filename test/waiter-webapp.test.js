@@ -76,11 +76,52 @@ describe('The Waiter Scheduling app', () => {
       {shift_date: new Date('2021-11-13'), status: 'working'},
     ]);
   });
-  // it('should get all the waiters with status schedule on a specific date.', async () => {});
-  // it('should get the full name of a waiter based on the waiterID.', async () => {});
-  // it('should remove a waiter from the schedule for a specific date.', async () => {});
-  // it('should update the status of the first standby waiter if a working waiter is removed.', async () => {});
-  // it('should return the status of a waiter for a specific date.', async () => {});
+  it('should get all the waiters with their status scheduled on a specific date.', async () => {
+    await waiters.addShift('2021-11-25', 'TieChe');
+    await waiters.addShift('2021-11-25', 'JanBaf');
+    await waiters.addShift('2021-11-25', 'DauBla');
+    await waiters.addShift('2021-11-25', 'BenPaf');
+    const result = await waiters.getShiftWaiters('2021-11-25');
+    const expected = [];
+    assert.deepStrictEqual(result, expected);
+  });
+  it('should get the full name of a waiter based on the waiterID.', async () => {
+    assert.strictEqual(await waiters.getWaiterName('IlsKin'), 'Ilse King');
+  });
+  it('should remove a waiter from the schedule for a specific date.', async () => {
+    await waiters.addShift('2021-11-25', 'TieChe');
+    await waiters.addShift('2021-11-25', 'JanBaf');
+    await waiters.addShift('2021-11-25', 'DauBla');
+    await waiters.addShift('2021-11-25', 'BenPaf');
+    await waiters.deleteShift('TieChe', '2021-11-25');
+    assert.strictEqual(
+      await waiters.getStatus('TieChe', '2021-11-25'),
+      undefined,
+    );
+  });
+
+  it('should update the status of the first standby waiter if a working waiter is removed.', async () => {
+    await waiters.addShift('2021-11-25', 'TieChe');
+    await waiters.addShift('2021-11-25', 'JanBaf');
+    await waiters.addShift('2021-11-25', 'DauBla');
+    await waiters.addShift('2021-11-25', 'BenPaf');
+    await waiters.deleteShift('TieChe', '2021-11-25');
+    assert.strictEqual(
+      await waiters.getStatus('BenPaf', '2021-11-25'),
+      'working',
+    );
+  });
+  it('should return the status of a waiter for a specific date.', async () => {
+    await waiters.addShift('2021-11-25', 'TieChe');
+    await waiters.addShift('2021-11-25', 'JanBaf');
+    await waiters.addShift('2021-11-25', 'DauBla');
+    await waiters.addShift('2021-11-25', 'BenPaf');
+    await waiters.deleteShift('TieChe', '2021-11-25');
+    assert.strictEqual(
+      await waiters.getStatus('BenPaf', '2021-11-25'),
+      'working',
+    );
+  });
 
   after(function () {
     pool.end();

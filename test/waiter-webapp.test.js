@@ -46,7 +46,10 @@ describe('The Waiter Scheduling app', () => {
     await waiters.addShift('2021-11-25', 'TieChe');
     await waiters.addShift('2021-11-25', 'JanBaf');
     await waiters.addShift('2021-11-25', 'DauBla');
-    assert.strictEqual(await waiters.getStatus('DauBla'), 'working');
+    assert.strictEqual(
+      await waiters.getStatus('DauBla', '2021-11-25'),
+      'working',
+    );
   });
 
   it('should put a waiter on standby for the requested date if there are three or more waiters scheduled.', async () => {
@@ -54,7 +57,10 @@ describe('The Waiter Scheduling app', () => {
     await waiters.addShift('2021-11-25', 'JanBaf');
     await waiters.addShift('2021-11-25', 'DauBla');
     await waiters.addShift('2021-11-25', 'BenPaf');
-    assert.strictEqual(await waiters.getStatus('BenPaf'), 'standby');
+    assert.strictEqual(
+      await waiters.getStatus('BenPaf', '2021-11-25'),
+      'standby',
+    );
   });
   it('should get the dates with status in a waiters schedule.', async () => {
     await waiters.addShift('2021-11-25', 'TieChe');
@@ -62,7 +68,7 @@ describe('The Waiter Scheduling app', () => {
     await waiters.addShift('2021-11-25', 'DauBla');
     await waiters.addShift('2021-11-25', 'BenPaf');
     await waiters.addShift('2021-11-13', 'BenPaf');
-    assert.deepStrictEqual(waiters.getShiftDates('BenPaf'), [
+    assert.deepStrictEqual(await waiters.getShiftDates('BenPaf'), [
       {shift_date: '2021-11-13', status: 'working'},
       {
         shift_date: '2021-11-25',

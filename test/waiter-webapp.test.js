@@ -70,10 +70,10 @@ describe('The Waiter Scheduling app', () => {
     await waiters.addShift('2021-11-13', 'BenPaf');
     assert.deepStrictEqual(await waiters.getShiftDates('BenPaf'), [
       {
-        shift_date: new Date('2021-11-25').toISOString(),
+        shift_date: new Date('2021-11-25'),
         status: 'standby',
       },
-      {shift_date: new Date('2021-11-13').toISOString(), status: 'working'},
+      {shift_date: new Date('2021-11-13'), status: 'working'},
     ]);
   });
   // it('should get all the waiters with status schedule on a specific date.', async () => {});

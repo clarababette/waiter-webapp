@@ -82,7 +82,9 @@ export default function waiterService(pool) {
       'SELECT status FROM shifts WHERE employee_id = $1 AND shift_date = $2',
       [waiterID, date],
     );
-    return result.rows[0].status ?? undefined;
+    if (result.rows[0].status) {
+      return result.rows[0].status;
+    }
   }
   return {
     getShiftDates,

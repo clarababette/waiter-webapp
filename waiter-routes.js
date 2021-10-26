@@ -4,96 +4,91 @@ export default function waiterRoutes(waiterService) {
     return moment(date).format('dddd DD MMMM YYYY');
   }
 
-  async function getStatus(waiterID, date) {
-    let shiftDates = await waiterService.getShiftDates(waiterID);
-
-    shiftDates = shiftDates.map((x) => formatDate(x['shift_date']));
-    let standbyDates = await waiterService.getStandbyDates(waiterID);
-    standbyDates = standbyDates.map((x) => formatDate(x['standby_shift_date']));
-    if (shiftDates.includes(date)) {
-      return 'working';
-    } else if (standbyDates.includes(date)) {
-      return 'standby';
-    }
-  }
-
   async function getSchedule(waiterID, week) {
-    let shiftDates = await waiterService.getShiftDates(waiterID);
-    shiftDates = shiftDates.map((x) => formatDate(x['shift_date']));
-    let standbyDates = await waiterService.getStandbyDates(waiterID);
-    standbyDates = standbyDates.map((x) => formatDate(x['standby_shift_date']));
-    let thisWeekDays = {};
-    let thisWeek = '';
-    let backToToday = '';
-
+    const allDates = await waiterService.getShiftDates(waiterID);
+    const shifts = {};
+    allDates.forEach(
+      (shift) =>
+        (shifts[moment(shift['shift_date']).format('YYYY-MM-DD')] =
+          shift['status']),
+    );
+    console.log(shifts);
+    let startDate = moment();
     if (week < 0) {
-      backToToday = 'Return to this week →';
+      week = week * -1;
+      startDate = startDate.subtract(week, 'weeks');
     } else if (week > 0) {
-      backToToday = '← Return to this week';
+      startDate = startDate.add(week, 'weeks');
     }
-    let sunday = new Date();
-    sunday.setDate(sunday.getDate() - sunday.getDay());
-    sunday.setDate(sunday.getDate() + week * 7);
 
-    let i = 1;
-    while (i < 8) {
-      let day = new Date(sunday.valueOf());
-      day.setDate(day.getDate() + i);
-      day = formatDate(day);
-      thisWeekDays[day] = undefined;
-      if (shiftDates.includes(day)) {
-        thisWeekDays[day] = 'working';
-      } else if (standbyDates.includes(day)) {
-        thisWeekDays[day] = 'standby';
-      }
-      switch (i) {
-        case 1:
-          thisWeek = `${day} - `;
-          break;
-        case 7:
-          thisWeek = thisWeek + day;
-          break;
-        default:
-          break;
-      }
+    const theseDates = {};
+    let i = 0;
+    while (i <= 7) {
+      let day = moment(startDate).add(i, 'days').format('YYYY-MM-DD');
+      console.log(day);
+      theseDates[day] = {};
+      theseDates[day]['status'] = shifts?.[day];
+      theseDates[day]['dateName'] = formatDate(day);
       i++;
     }
 
-    return {
-      waiter_name: await waiterService.getWaiterName(waiterID),
-      waiter_id: waiterID,
-      backToToday: backToToday,
-      week: thisWeek,
-      days: thisWeekDays,
-    };
+    return theseDates;
+  }
+
+  function getWeek(week) {
+    let startDate = moment();
+    if (week < 0) {
+      week = week * -1;
+      startDate = startDate.subtract(week, 'weeks');
+    } else if (week > 0) {
+      startDate = startDate.add(week, 'weeks');
+    }
+    return `${startDate.format('dddd DD MMMM YYYY')} - ${startDate
+      .add(7, 'days')
+      .format('dddd DD MMMM YYYY')}`;
   }
 
   async function schedule(req, res) {
     if (!req.session.nav) {
       req.session.nav = 0;
     }
-    const waiterID = req.params.waiter_id;
-    req.session.waiter_id = waiterID;
-    res.render('waiter-schedule', await getSchedule(waiterID, req.session.nav));
+    let backToToday = '';
+    if (req.session.nav < 0) {
+      backToToday = 'Return to this week →';
+    } else if (req.session.nav > 0) {
+      backToToday = '← Return to this week';
+    }
+    const waiterID = req.params.waiterID;
+    req.session.waiterID = waiterID;
+
+    res.render('waiter-schedule', {
+      waiter_name: await waiterService.getWaiterName(waiterID),
+      days: await getSchedule(waiterID, req.session.nav),
+      week: getWeek(req.session.nav),
+      backToToday,
+      waiterID: waiterID,
+    });
   }
 
   async function home(req, res) {
     req.session.nav = 0;
-    const waiterID = req.params.waiter_id;
-    req.session.waiter_id = waiterID;
+    const waiterID = req.params.waiterID;
+    req.session.waiterID = waiterID;
     const days = {
       today_date: formatDate(new Date()),
       tomorrow_date: formatDate(moment(new Date()).add(1, 'd')),
     };
     days['today_status'] =
-      (await getStatus(waiterID, days['today_date'])) || 'not working';
+      (await waiterService.getStatus(waiterID, moment())) || 'not working';
     days['tomorrow_status'] =
-      (await getStatus(waiterID, days['tomorrow_date'])) || 'not working';
+      (await waiterService.getStatus(waiterID, moment().add(1, 'days'))) ||
+      'not working';
 
     days['waiter_name'] = await waiterService.getWaiterName(
-      req.params.waiter_id,
+      req.params.waiterID,
     );
-    days['waiter_id'] = waiterID;
+    days['waiterID'] = waiterID;
+    console.log(waiterID);
     res.render('waiter-home', days);
   }
 
@@ -101,56 +96,45 @@ export default function waiterRoutes(waiterService) {
     if (!req.session.nav) {
       req.session.nav = 0;
     }
-    const waiterID = req.params.waiter_id;
-    req.session.waiter_id = waiterID;
-    const schedule = await getSchedule(waiterID, req.session.nav);
-    for (const date in schedule.days) {
-      if (moment(new Date(date)).isBefore()) {
-        delete schedule.days[date];
-      }
-    }
-
-    res.render('waiter-add', schedule);
+    const waiterID = req.params.waiterID;
+    req.session.waiterID = waiterID;
+    res.render('waiter-add', {
+      waiter_name: await waiterService.getWaiterName(waiterID),
+      waiterID: waiterID,
+      days: await getSchedule(waiterID, req.session.nav),
+    });
   }
 
   async function shiftAvailability(selectedDates, waiterID) {
-    const dates = selectedDates.map((x) =>
-      moment(new Date(x)).format('YYYY-MM-DD'),
-    );
+    const dates = selectedDates.map((x) => moment(x).format('YYYY-MM-DD'));
     dates.forEach(async (date) => {
-      let scheduledWaiters = await waiterService.getShiftWaiters(date);
-      scheduledWaiters = scheduledWaiters.length;
-      if (scheduledWaiters < 3) {
-        await waiterService.addShift(date, waiterID);
-      } else {
-        await waiterService.addStandby(date, waiterID);
-      }
+      await waiterService.addShift(date, waiterID);
     });
   }
 
   async function saveShifts(req, res) {
-    const waiterID = req.params.waiter_id;
+    const waiterID = req.params.waiterID;
     const selected = Object.keys(req.body);
     await shiftAvailability(selected, waiterID);
-    res.redirect(`/${waiterID}/schedule`);
+    res.redirect(`/waiter/${waiterID}/schedule`);
   }
 
   function prevWeekNav(req, res) {
     const waiterID = req.session.waiter_id;
     req.session.nav--;
-    res.redirect(`/${waiterID}/schedule`);
+    res.redirect(`schedule`);
   }
 
   function nextWeekNav(req, res) {
     const waiterID = req.session.waiter_id;
     req.session.nav++;
-    res.redirect(`/${waiterID}/schedule`);
+    res.redirect(`schedule`);
   }
 
   function todayNav(req, res) {
     const waiterID = req.session.waiter_id;
     req.session.nav = 0;
-    res.redirect(`/${waiterID}/schedule`);
+    res.redirect(`schedule`);
   }
 
   return {

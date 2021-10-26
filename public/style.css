@@ -12,6 +12,10 @@ html {
   background-color: white;
 }
 
+input {
+  cursor: pointer;
+}
+
 body {
   margin-left: auto;
   margin-right: auto;
@@ -168,9 +172,19 @@ input.save {
     border: solid 2pt;
 }
 
+input.done {
+    display: none;
+    grid-column: 1 / -1;
+    width: fit-content;
+    justify-self: center;
+    background-color: #e69db0;
+    font-weight: 400;
+    border-radius: 0.2rem;
+    padding: 0.2rem;
+}
+
 .admin h2 {
-    font-size: 0.9rem;
-    /* color: white; */
+    font-size: 0.8rem;
     font-weight: 400;
     letter-spacing: 0.05rem;
     grid-column: 2;
@@ -242,13 +256,13 @@ input[value="expand_more"] {
    grid-column: span 3;
 }
 
-.admin .day div {display: none;display: grid;grid-template-columns: auto 1fr;row-gap: 0.5rem;align-items: center;align-content: start;grid-column: span 3;width: max-content;justify-self: center;}
+.admin .day div {display: none; grid-template-columns: auto 1fr;row-gap: 0.5rem;align-items: center;align-content: start;grid-column: span 3;width: max-content;justify-self: center;}
 
 .week .day.full {
     border: solid #afd1a1;
 }
 
-.full-w-standby::before {content: '';position: absolute;border: dotted #a5d5c9;border-radius: inherit;top: -0.6rem;bottom: -0.6rem;left: -0.6rem;right: -0.6rem;}
+.full-w-standby::before {content: '';position: absolute;border: dotted #a5d5c9;border-radius: inherit;top: -0.6rem;bottom: -0.6rem;left: -0.6rem;right: -0.6rem;z-index: -100;}
 
 .admin div:first-child {
   margin-top: 1rem;
@@ -277,11 +291,15 @@ input[value="expand_more"] {
     grid-row: 2;
 }
 
-input[value="clear"] {
+.admin button.clear {
   font-size: 0.8rem;
   color: red;
   grid-column: 1;
-  padding-right: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  display: none;
+  cursor: pointer;
 }
 
 input[value="mode_edit"] {
@@ -292,8 +310,9 @@ input[value="mode_edit"] {
 h2 {}
 
 form.admin-add {
-    display: flex;
+    display: none;
     justify-content: center;
+    grid-column: 1 / -1;
 }
 
 span.waiter {
@@ -317,7 +336,7 @@ span.waiter {
 .week .day {
   grid-column: span 1;
   height: auto;
-  grid-template-columns: auto auto;
+  grid-template-columns: 2rem 1fr 2rem;
   align-content: start;
   width: 100%;
 }
@@ -327,6 +346,7 @@ display: none;
 }
 
 .admin .day div {
+  display: grid;
     grid-column: span 3;
     grid-row: 2;
     row-gap: 0.4rem;
@@ -373,9 +393,7 @@ span.waiter {
     text-align: left;
 }
 
-.full-w-standby form.admin-add {
-    grid-column: span 4;
-}
+
 
 .full-w-standby h2 {
     grid-column: 2 / 4;
@@ -384,8 +402,8 @@ span.waiter {
 .full-w-standby .working {}
 
 form.admin-add {
-    grid-column: span 3;
-    display: flex;
+    grid-column: 1 / -1;
+    display: none;
     justify-content: center;
     padding: 1rem;
 }
@@ -397,13 +415,14 @@ form.admin-add {
 input[value="mode_edit"] {
     grid-column: 3;
     font-size: 0.9rem;
-    justify-self: start;
+    justify-self: end;
 }
 
 .full-w-standby input[value="mode_edit"] {
   font-size: 0.9rem;
   grid-column: 4;
-  justify-self: start;
+  grid-row: 1;
+  justify-self: end;
 }
 
 .working h3 {

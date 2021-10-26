@@ -1,15 +1,7 @@
 export default function waiterService(pool) {
   async function getShiftDates(waiterID) {
     const result = await pool.query(
-      'SELECT shift_date FROM shifts WHERE employee_id = $1',
-      [waiterID],
-    );
-    return result.rows;
-  }
-
-  async function getStandbyDates(waiterID) {
-    const result = await pool.query(
-      'SELECT standby_shift_date FROM standby WHERE employee_id = $1',
+      'SELECT shift_date, status FROM shifts WHERE employee_id = $1',
       [waiterID],
     );
     return result.rows;
@@ -17,32 +9,29 @@ export default function waiterService(pool) {
 
   async function getShiftWaiters(date) {
     const result = await pool.query(
-      'SELECT * FROM shifts INNER JOIN waiters ON waiters.employee_id = shifts.employee_id WHERE shift_date = $1',
-      [date],
-    );
-    return result.rows;
-  }
-
-  async function getStandbyWaiters(date) {
-    const result = await pool.query(
-      'SELECT * FROM standby INNER JOIN waiters ON waiters.employee_id = standby.employee_id WHERE standby_shift_date = $1',
+      'SELECT shifts.employee_id, first_name, last_name, status FROM shifts INNER JOIN waiters ON waiters.employee_id = shifts.employee_id WHERE shift_date = $1',
       [date],
     );
     return result.rows;
   }
 
   async function addShift(date, waiterID) {
-    await pool.query(
-      'INSERT INTO shifts (shift_date, employee_id) VALUES ($1,$2) ON CONFLICT DO NOTHING;',
-      [date, waiterID],
+    const workCount = await pool.query(
+      'SELECT * FROM shifts WHERE shift_date = $1 AND status=$2',
+      [date, 'working'],
     );
-  }
 
-  async function addStandby(date, waiterID) {
-    await pool.query(
-      'INSERT INTO standby (standby_shift_date, employee_id) VALUES ($1,$2) ON CONFLICT DO NOTHING;',
-      [date, waiterID],
-    );
+    if (workCount.rowCount < 3) {
+      await pool.query(
+        'INSERT INTO shifts (shift_date, employee_id, status) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING;',
+        [date, waiterID, 'working'],
+      );
+    } else {
+      await pool.query(
+        'INSERT INTO shifts (shift_date, employee_id, status) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING;',
+        [date, waiterID, 'standby'],
+      );
+    }
   }
 
   async function getWaiterName(waiterID) {
@@ -55,22 +44,51 @@ export default function waiterService(pool) {
     }
   }
 
-  async function deleteShift() {}
+  async function deleteShift(waiterID, date) {
+    await pool.query(
+      'DELETE FROM shifts WHERE employee_id = $1 AND shift_date = $2',
+      [waiterID, date],
+    );
+    const workCount = await pool.query(
+      'SELECT * FROM shifts WHERE shift_date = $1 AND status=$2',
+      [date, 'working'],
+    );
+    if (workCount.rowCount < 3) {
+      await moveStandbyToShift(date);
+    }
+  }
 
-  async function deleteStandby() {}
+  async function moveStandbyToShift(date) {
+    const firstStandby = await pool.query(
+      'SELECT employee_id FROM shifts WHERE shift_date = $1 AND status= $2 LIMIT 1',
+      [date, 'standby'],
+    );
+    return await pool.query(
+      'UPDATE shifts SET status = $1 WHERE shift_date = $2 AND employee_id = $3',
+      ['working', date, firstStandby.rows[0]?.employee_id],
+    );
+  }
 
-  async function moveStandbytoShift() {}
+  async function getAllWaiters() {
+    const result = await pool.query('SELECT * FROM waiters');
+    return result.rows;
+  }
 
+  async function getStatus(waiterID, date) {
+    const result = await pool.query(
+      'SELECT status FROM shifts WHERE employee_id = $1 AND shift_date = $2',
+      [waiterID, date],
+    );
+    return result.rows[0]?.status;
+  }
   return {
     getShiftDates,
-    getStandbyDates,
     getShiftWaiters,
-    getStandbyWaiters,
     addShift,
-    addStandby,
     deleteShift,
-    deleteStandby,
-    moveStandbytoShift,
+    moveStandbyToShift,
     getWaiterName,
+    getAllWaiters,
+    getStatus,
   };
 }

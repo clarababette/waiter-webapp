@@ -5,18 +5,36 @@ export default function managerRoutes(waiterService) {
   }
 
   async function getWaiters(day) {
-    let working = await waiterService.getShiftWaiters(day.date);
-    working = working.map((x) => `${x['first_name']} ${x['last_name']}`);
+    const schedWaiters = await waiterService.getShiftWaiters(day.date);
+    let working = schedWaiters.filter(
+      (waiter) => waiter['status'] == 'working',
+    );
+    let standby = schedWaiters.filter(
+      (waiter) => waiter['status'] == 'standby',
+    );
+    let restWaiters = await waiterService.getAllWaiters();
+
+    function available(waiter) {
+      if (
+        schedWaiters.some((x) => x['employee_id'] === waiter['employee_id'])
+      ) {
+        return false;
+      }
+      return true;
+    }
+
+    restWaiters = restWaiters.filter((waiter) => available(waiter));
+
     day['working'] = working;
-    let standby = await waiterService.getStandbyWaiters(day.date);
-    standby = standby.map((x) => `${x['first_name']} ${x['last_name']}`);
     day['standby'] = standby;
+    day['available'] = restWaiters;
     day['status'] = '';
     if (working.length == 3 && standby.length > 0) {
       day['status'] = 'full-w-standby';
     } else if (working.length == 3) {
       day['status'] = 'full';
     }
+
     return day;
   }
 
@@ -52,11 +70,11 @@ export default function managerRoutes(waiterService) {
         default:
           break;
       }
-      shift.date = formatDate(shift.date);
+      shift.date = shift.date.toISOString();
+      shift['dateString'] = formatDate(shift.date);
       thisWeek.push(shift);
       i++;
     }
-
     res.render('manager', {
       day: thisWeek,
       week: navDates,
@@ -79,10 +97,55 @@ export default function managerRoutes(waiterService) {
     res.redirect(`/admin`);
   }
 
+  async function removeWaiter(req, res) {
+    console.log(req.params);
+    const waiterID = req.params.waiter_id;
+    const status = req.params.status;
+    const date = moment(req.params.date).format('YYYY-MM-DD');
+
+    await waiterService.deleteShift(waiterID, date);
+    if (status === 'working') {
+      await waiterService.moveStandbyToShift(date);
+    }
+
+    res.redirect('/admin');
+  }
+
+  async function addWaiter(req, res) {
+    const waiterID = req.body['admin-add'];
+    const date = req.params.date;
+    await waiterService.addShift(date, waiterID);
+    res.redirect('/admin');
+  }
+
+  async function editShift(req, res) {
+    const date = req.params.date;
+    const actions = req.query;
+    for (let waiter in actions) {
+      if (typeof actions[waiter] == 'object') {
+        if (actions[waiter].length % 2 === 0) {
+          delete actions[waiter];
+        } else {
+          actions[waiter] = actions[waiter][actions[waiter].length - 1];
+        }
+      }
+      if (actions[waiter] === 'delete') {
+        await waiterService.deleteShift(waiter, date);
+      }
+      if (actions[waiter] === 'add') {
+        await waiterService.addShift(date, waiter);
+      }
+    }
+    res.redirect('/admin');
+  }
+
   return {
     schedule,
     prevWeekNav,
     nextWeekNav,
     todayNav,
+    removeWaiter,
+    addWaiter,
+    editShift,
   };
 }

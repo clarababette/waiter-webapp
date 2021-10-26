@@ -8,14 +8,14 @@
   <div class='week'>
     {{#each day}}
     <div class='day {{this.status}}'>
-      <h2>{{this.date}}</h2>
+      <h2>{{this.dateString}}</h2>
       <input type='button' class='material-icons-round' value='mode_edit' />
       {{#if this.working}}
       <div class='working'>
         <h3>Working</h3>
         {{#each this.working}}
-      <input type='button' class='material-icons-round' value='clear' />
-        <span class='waiter'>{{this}}</span>
+      <button value={{this.employee_id}} class="material-icons-round clear">clear</button>
+        <span class='waiter'>{{this.first_name}} {{this.last_name}}</span>
         {{/each}}
       </div>
       {{/if}}
@@ -23,22 +23,21 @@
       <div class='standby'>
         <h3>On standby</h3>
         {{#each this.standby}}
-        <input type='button' class='material-icons-round' value='clear' />
-        <span class='waiter'>{{this}}</span>
+        <button value={{this.employee_id}} class="material-icons-round clear">clear</button>
+        <span class='waiter'>{{this.first_name}} {{this.last_name}}</span>
         {{/each}}
       </div>
       {{/if}}
-      {{#unless this.standby}}
-        <form class="admin-add" action="" method="POST">
+        <form class="admin-add" action="/admin/edit/{{date}}" method="POST">
           <select name="admin-add" id="admin-add">
             <option value="">Add waiter</option>
-            {{#each available-waiter}}
-            <option value="{{this.id}}">{{this.name}}</option>
+            {{#each available}}
+            <option value="{{this.employee_id}}">{{this.first_name}} {{this.last_name}}</option>
             {{/each}}
           </select>
-          <input type='submit' class='material-icons-round' value='person_add' />
+          <input type='button' class='material-icons-round' value='person_add' />
+          <input type='submit' class='done' value='save'/>
         </form>
-        {{/unless}}
         {{#if this.working}}
       <input type='button' class='material-icons-round' value='expand_more' />
       {{/if}}

@@ -59,15 +59,18 @@ app.get('/admin', managerRoutes.schedule);
 app.get('/admin/prev-week', managerRoutes.prevWeekNav);
 app.get('/admin/next-week', managerRoutes.nextWeekNav);
 app.get('/admin/today', managerRoutes.todayNav);
+app.get('/remove/:status/:date/:waiter_id', managerRoutes.removeWaiter);
+app.post('/admin/add/:date', managerRoutes.addWaiter);
+app.post('/admin/edit/:date', managerRoutes.editShift);
 
 // Waiter Routes
-app.get('/:waiter_id/schedule', waiterRoutes.schedule);
-app.get('/:waiter_id/add', waiterRoutes.selectShifts);
-app.post('/:waiter_id/add', waiterRoutes.saveShifts);
-app.get('/schedule/prev-week', waiterRoutes.prevWeekNav);
-app.get('/schedule/next-week', waiterRoutes.nextWeekNav);
-app.get('/today', waiterRoutes.todayNav);
-app.get('/:waiter_id', waiterRoutes.home);
+app.get('/waiter/:waiterID/schedule', waiterRoutes.schedule);
+app.get('/waiter/:waiterID/add', waiterRoutes.selectShifts);
+app.post('/waiter/:waiterID/add', waiterRoutes.saveShifts);
+app.get('/waiter/:waiterID/prev-week', waiterRoutes.prevWeekNav);
+app.get('/waiter/:waiterID/next-week', waiterRoutes.nextWeekNav);
+app.get('/waiter/:waiterID/today', waiterRoutes.todayNav);
+app.get('/waiter/:waiterID', waiterRoutes.home);
 
 const PORT = process.env.PORT || 2305;
 app.listen(PORT, () => {

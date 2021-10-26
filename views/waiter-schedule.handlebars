@@ -1,10 +1,10 @@
 <div class="name">Hi {{waiter_name}}!</div>
-<a class="material-icons-round" href="/{{waiter_id}}">home</a>
-<a class='return' href="/today">{{backToToday}}</a>
-<a class="material-icons-round last-week" href="/schedule/prev-week">chevron_left</a>
+<a class="material-icons-round" href="/waiter/{{waiterID}}">home</a>
+<a class='return' href="today">{{backToToday}}</a>
+<a class="material-icons-round last-week" href="prev-week">chevron_left</a>
 <p class="this-week">{{week}}</p>
-<a class="material-icons-round next-week" href="/schedule/next-week">chevron_right</a>
+<a class="material-icons-round next-week" href="next-week">chevron_right</a>
 {{#each days}}
-<div class="day {{this}}"><span>{{@key}}</span><span>{{this}}</span></div>
+<div class="day {{this.status}}"><span>{{this.dateName}}</span><span>{{this.status}}</span></div>
 {{/each}}
-<a class="shifts" href="/{{waiter_id}}/add">add shifts</a>
+<a class="shifts" href="add">add shifts</a>

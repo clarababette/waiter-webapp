@@ -65,7 +65,7 @@ export default function waiterService(pool) {
     );
     return await pool.query(
       'UPDATE shifts SET status = $1 WHERE shift_date = $2 AND employee_id = $3',
-      ['working', date, firstStandby.rows[0]?.employee_id],
+      ['working', date, firstStandby.rows[0].employee_id ?? undefined],
     );
   }
 

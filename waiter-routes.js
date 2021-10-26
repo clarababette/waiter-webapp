@@ -26,7 +26,7 @@ export default function waiterRoutes(waiterService) {
     while (i <= 7) {
       let day = moment(startDate).add(i, 'days').format('YYYY-MM-DD');
       theseDates[day] = {};
-      theseDates[day]['status'] = shifts[day] || undefined;
+      theseDates[day]['status'] = shifts[day] ?? undefined;
       theseDates[day]['dateName'] = formatDate(day);
       i++;
     }

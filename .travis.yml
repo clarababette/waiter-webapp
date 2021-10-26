@@ -26,5 +26,5 @@ before_install:
   - sudo service postgresql@13-main restart
 
 before_script:
-  - psql -p 5433 -c 'create database  registration_tests;' -U postgres
+  - psql -p 5433 -c 'create database  waiter_tests;' -U postgres
   - psql -U postgres -d waiter_tests -a -f waitersDB.sql

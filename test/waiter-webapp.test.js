@@ -82,7 +82,32 @@ describe('The Waiter Scheduling app', () => {
     await waiters.addShift('2021-11-25', 'DauBla');
     await waiters.addShift('2021-11-25', 'BenPaf');
     const result = await waiters.getShiftWaiters('2021-11-25');
-    const expected = [];
+    const expected = [
+      {
+        employee_id: 'BenPaf',
+        first_name: 'Benjy',
+        last_name: 'Pafford',
+        status: 'standby',
+      },
+      {
+        employee_id: 'TieChe',
+        first_name: 'Tiena',
+        last_name: 'Chesney',
+        status: 'working',
+      },
+      {
+        employee_id: 'JanBaf',
+        first_name: 'Janaya',
+        last_name: 'Baff',
+        status: 'working',
+      },
+      {
+        employee_id: 'DauBla',
+        first_name: 'Daune',
+        last_name: 'Blann',
+        status: 'working',
+      },
+    ];
     assert.deepStrictEqual(result, expected);
   });
   it('should get the full name of a waiter based on the waiterID.', async () => {

@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert, {strictEqual} from 'assert';
 import waiterService from '../waiter-services.js';
 import pg from 'pg';
 const Pool = pg.Pool;
@@ -42,6 +42,39 @@ describe('The Waiter Scheduling app', () => {
     const result = await waiters.getAllWaiters();
     assert.deepStrictEqual(result, expected);
   });
+  it('should schedule a waiter to work on the requested date if there are fewer than three waiters scheduled.', async () => {
+    await waiters.addShift('2021-11-25', 'TieChe');
+    await waiters.addShift('2021-11-25', 'JanBaf');
+    await waiters.addShift('2021-11-25', 'DauBla');
+    assert.strictEqual(await waiters.getStatus('DauBla'), 'working');
+  });
+
+  it('should put a waiter on standby for the requested date if there are three or more waiters scheduled.', async () => {
+    await waiters.addShift('2021-11-25', 'TieChe');
+    await waiters.addShift('2021-11-25', 'JanBaf');
+    await waiters.addShift('2021-11-25', 'DauBla');
+    await waiters.addShift('2021-11-25', 'BenPaf');
+    assert.strictEqual(await waiters.getStatus('BenPaf'), 'standby');
+  });
+  it('should get the dates with status in a waiters schedule.', async () => {
+    await waiters.addShift('2021-11-25', 'TieChe');
+    await waiters.addShift('2021-11-25', 'JanBaf');
+    await waiters.addShift('2021-11-25', 'DauBla');
+    await waiters.addShift('2021-11-25', 'BenPaf');
+    await waiters.addShift('2021-11-13', 'BenPaf');
+    assert.deepStrictEqual(waiters.getShiftDates('BenPaf'), [
+      {shift_date: '2021-11-13', status: 'working'},
+      {
+        shift_date: '2021-11-25',
+        status: 'standby',
+      },
+    ]);
+  });
+  // it('should get all the waiters with status schedule on a specific date.', async () => {});
+  // it('should get the full name of a waiter based on the waiterID.', async () => {});
+  // it('should remove a waiter from the schedule for a specific date.', async () => {});
+  // it('should update the status of the first standby waiter if a working waiter is removed.', async () => {});
+  // it('should return the status of a waiter for a specific date.', async () => {});
 
   after(function () {
     pool.end();

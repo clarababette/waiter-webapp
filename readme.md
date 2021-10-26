@@ -1,0 +1,1 @@
+[![Build Status](https://app.travis-ci.com/clarababette/waiter-webapp.svg?branch=main)](https://app.travis-ci.com/clarababette/waiter-webapp)

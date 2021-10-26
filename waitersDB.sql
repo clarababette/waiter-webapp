@@ -11,3 +11,14 @@ CREATE TABLE shifts (
   status varchar(7) CHECK (status = 'working' OR status = 'standby'),
   PRIMARY KEY (shift_date,employee_id)
 );
+
+insert into waiters (first_name, last_name) values ('Dave', 'Avramov');
+insert into waiters (first_name, last_name) values ('Ilse', 'King');
+insert into waiters (first_name, last_name) values ('Benjy', 'Pafford');
+insert into waiters (first_name, last_name) values ('Amelie', 'Loidl');
+insert into waiters (first_name, last_name) values ('Karlene', 'Maciaszek');
+insert into waiters (first_name, last_name) values ('Tiena', 'Chesney');
+insert into waiters (first_name, last_name) values ('Janaya', 'Baff');
+insert into waiters (first_name, last_name) values ('Jean', 'Guillotin');
+insert into waiters (first_name, last_name) values ('Daune', 'Blann');
+insert into waiters (first_name, last_name) values ('Alessandra', 'Tale');

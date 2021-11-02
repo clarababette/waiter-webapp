@@ -86,6 +86,27 @@ export default function waiterService(pool) {
       return result.rows[0].status;
     }
   }
+
+  async function addWaiter(firstName, surname) {
+    let result = await pool.query(
+      'insert into waiters (first_name, last_name) values ($1, $2) ON CONFLICT DO NOTHING RETURNING *',
+      [firstName, surname],
+    );
+
+    if (result.rowCount == 0) {
+      result = await pool.query(
+        'SELECT employee_id FROM waiters WHERE first_name = $1 AND last_name = $2',
+        [firstName, surname],
+      );
+    }
+
+    return result.rows[0]['employee_id'];
+  }
+
+  async function deleteAllShifts() {
+    await pool.query('DELETE FROM shifts');
+  }
+
   return {
     getShiftDates,
     getShiftWaiters,
@@ -95,5 +116,7 @@ export default function waiterService(pool) {
     getWaiterName,
     getAllWaiters,
     getStatus,
+    addWaiter,
+    deleteAllShifts,
   };
 }

@@ -324,6 +324,58 @@ span.waiter {
     text-align: left;
 }
 
+form.login {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  row-gap: 1rem;
+}
+
+
+.login h2 {
+    grid-column: span 2;
+}
+
+.login h3 {
+    grid-column: span 2;
+}
+
+.login label {
+    grid-column: 1 / 2;
+    text-align: end;
+    padding-right: 0.5rem;
+}
+
+.login input[type="submit"] {
+    border: none;
+    border-radius: 0.2rem;
+    padding: 0.5rem;
+    background-color: #e69db0;
+    font-weight: 400;
+    width: fit-content;
+    justify-self: center;
+    grid-column: span 2;
+}
+
+a.admin-link {
+    margin: 2rem auto;
+    width: fit-content;
+    height: fit-content;
+    padding: 1rem;
+    border-radius: 0.2rem;
+    background-color: coral;
+}
+
+input[type="text"] {
+    text-align: left;
+}
+
+.reset input {
+    margin: 1rem;
+    background-color: lightsteelblue;
+    padding: 1rem;
+    font-weight: 400;
+    border-radius: 0.2rem;
+}
 
 @media only screen and (min-width: 800px) {
   .admin {

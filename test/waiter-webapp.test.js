@@ -148,6 +148,24 @@ describe('The Waiter Scheduling app', () => {
     );
   });
 
+  it('should add new waiters to the waiters table', async () => {
+    const waiterID = await waiters.addWaiter('Sally', 'Kent');
+    let allWaiters = await waiters.getAllWaiters();
+    allWaiters = allWaiters.map((waiter) => waiter['employee_id']);
+    assert.strictEqual(allWaiters.contain(waiterID), true);
+  });
+
+  it('should delete all shifts', async () => {
+    await waiters.addShift('2021-11-25', 'TieChe');
+    await waiters.addShift('2021-11-25', 'JanBaf');
+    await waiters.addShift('2021-11-25', 'DauBla');
+    await waiters.addShift('2021-11-25', 'BenPaf');
+    await waiters.deleteAllShifts();
+
+    const shifts = await pool.query('SELECT * FROM shifts');
+    assert.strictEqual(shifts.rowCount, 0);
+  });
+
   after(function () {
     pool.end();
   });

@@ -139,6 +139,11 @@ export default function managerRoutes(waiterService) {
     res.redirect('/admin');
   }
 
+  async function resetSchedule(req, res) {
+    await waiterService.deleteAllShifts();
+    res.redirect('/admin');
+  }
+
   return {
     schedule,
     prevWeekNav,
@@ -147,5 +152,6 @@ export default function managerRoutes(waiterService) {
     removeWaiter,
     addWaiter,
     editShift,
+    resetSchedule,
   };
 }

@@ -12,7 +12,6 @@ export default function waiterRoutes(waiterService) {
         (shifts[moment(shift['shift_date']).format('YYYY-MM-DD')] =
           shift['status']),
     );
-    console.log(shifts);
     let startDate = moment();
     if (week < 0) {
       week = week * -1;
@@ -90,7 +89,6 @@ export default function waiterRoutes(waiterService) {
       req.params.waiterID,
     );
     days['waiterID'] = waiterID;
-    console.log(waiterID);
     res.render('waiter-home', days);
   }
 
@@ -139,6 +137,17 @@ export default function waiterRoutes(waiterService) {
     res.redirect(`schedule`);
   }
 
+  async function login(req, res) {
+    let firstName = req.body.firstName;
+    firstName = firstName.trim();
+    firstName = [firstName[0].toUpperCase(), ...firstName.slice(1)].join('');
+    let surname = req.body.surname;
+    surname = surname.trim();
+    surname = [surname[0].toUpperCase(), ...surname.slice(1)].join('');
+    let waiterID = await waiterService.addWaiter(firstName, surname);
+    res.redirect(`/waiter/${waiterID}`);
+  }
+
   return {
     schedule,
     home,
@@ -148,5 +157,6 @@ export default function waiterRoutes(waiterService) {
     nextWeekNav,
     todayNav,
     shiftAvailability,
+    login,
   };
 }

@@ -51,8 +51,9 @@ app.use(
 );
 
 app.get('/', async (req, res) => {
-  res.redirect('/admin');
+  res.render('login');
 });
+app.post('/login', waiterRoutes.login);
 
 // Manager Routes
 app.get('/admin', managerRoutes.schedule);
@@ -62,6 +63,7 @@ app.get('/admin/today', managerRoutes.todayNav);
 app.get('/remove/:status/:date/:waiter_id', managerRoutes.removeWaiter);
 app.post('/admin/add/:date', managerRoutes.addWaiter);
 app.post('/admin/edit/:date', managerRoutes.editShift);
+app.post('/reset', managerRoutes.resetSchedule);
 
 // Waiter Routes
 app.get('/waiter/:waiterID/schedule', waiterRoutes.schedule);

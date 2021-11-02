@@ -148,6 +148,29 @@ export default function waiterRoutes(waiterService) {
     res.redirect(`/waiter/${waiterID}`);
   }
 
+  async function selectCancelShifts(req, res) {
+    if (!req.session.nav) {
+      req.session.nav = 0;
+    }
+    const waiterID = req.params.waiterID;
+    req.session.waiterID = waiterID;
+    res.render('waiter-cancel', {
+      waiter_name: await waiterService.getWaiterName(waiterID),
+      waiterID: waiterID,
+      days: await getSchedule(waiterID, req.session.nav),
+    });
+  }
+  async function saveCancelShifts(req, res) {
+    const waiterID = req.params.waiterID;
+    const selected = Object.keys(req.body);
+    const dates = selected.map((x) => moment(x).format('YYYY-MM-DD'));
+    dates.forEach(async (date) => {
+      await waiterService.deleteShift(waiterID, date);
+    });
+
+    res.redirect(`/waiter/${waiterID}/schedule`);
+  }
+
   return {
     schedule,
     home,
@@ -158,5 +181,7 @@ export default function waiterRoutes(waiterService) {
     todayNav,
     shiftAvailability,
     login,
+    selectCancelShifts,
+    saveCancelShifts,
   };
 }

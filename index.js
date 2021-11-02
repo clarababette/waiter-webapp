@@ -69,6 +69,8 @@ app.post('/reset', managerRoutes.resetSchedule);
 app.get('/waiter/:waiterID/schedule', waiterRoutes.schedule);
 app.get('/waiter/:waiterID/add', waiterRoutes.selectShifts);
 app.post('/waiter/:waiterID/add', waiterRoutes.saveShifts);
+app.get('/waiter/:waiterID/cancel', waiterRoutes.selectCancelShifts);
+app.post('/waiter/:waiterID/cancel', waiterRoutes.saveCancelShifts);
 app.get('/waiter/:waiterID/prev-week', waiterRoutes.prevWeekNav);
 app.get('/waiter/:waiterID/next-week', waiterRoutes.nextWeekNav);
 app.get('/waiter/:waiterID/today', waiterRoutes.todayNav);

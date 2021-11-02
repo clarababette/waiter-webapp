@@ -152,7 +152,7 @@ describe('The Waiter Scheduling app', () => {
     const waiterID = await waiters.addWaiter('Sally', 'Kent');
     let allWaiters = await waiters.getAllWaiters();
     allWaiters = allWaiters.map((waiter) => waiter['employee_id']);
-    assert.strictEqual(allWaiters.contain(waiterID), true);
+    assert.strictEqual(allWaiters.includes(waiterID), true);
   });
 
   it('should delete all shifts', async () => {
